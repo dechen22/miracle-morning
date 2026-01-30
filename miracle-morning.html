@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miracle Morning Routine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #C49A93 0%, #B08580 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            background: #F5F1EA;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            max-width: 700px;
+            width: 100%;
+            padding: 48px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2D2D2D;
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .day-display {
+            font-size: 1em;
+            color: #B08580;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding: 24px;
+            background: #FFFFFF;
+            border: 1px solid #E5E0D8;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .step.completed {
+            background: #FAF8F4;
+            border-color: #DDD9D0;
+        }
+
+        .step.completed .step-title {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .step:hover {
+            box-shadow: 0 4px 16px rgba(196, 154, 147, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .step-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #C49A93;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.15em;
+            color: #2D2D2D;
+            margin-bottom: 0;
+            font-weight: 600;
+            flex: 1;
+            letter-spacing: -0.3px;
+        }
+
+        .step-content {
+            line-height: 1.7;
+            color: #5A5A5A;
+            font-size: 0.95em;
+            margin-top: 16px;
+            margin-left: 38px;
+        }
+
+        .step-content p {
+            margin-bottom: 12px;
+        }
+
+        .step-content strong {
+            color: #3D3D3D;
+            font-weight: 600;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        .reflection-item {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .reflection-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #C49A93;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 32px;
+            gap: 12px;
+        }
+
+        button {
+            background: #C49A93;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            letter-spacing: 0.3px;
+        }
+
+        button:hover {
+            background: #B08580;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(196, 154, 147, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 32px 24px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .step-title {
+                font-size: 1.05em;
+            }
+
+            .step-content {
+                font-size: 0.9em;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Miracle Morning</h1>
+            <div class="day-display" id="dayDisplay"></div>
+        </div>
+
+        <div id="routine"></div>
+
+        <div class="nav-buttons">
+            <button onclick="previousDay()">← Previous Day</button>
+            <button onclick="nextDay()">Next Day →</button>
+        </div>
+    </div>
+
+    <script>
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        
+        const reflections = {
+            impermanence: [
+                "This body will age, become ill, and die.",
+                "I will die; the time of my death is uncertain.",
+                "This moment is part of preparing for death.",
+                "There is no guarantee of time remaining.",
+                "All beings experience suffering and separation.",
+                "Nothing remains fixed; all conditions change.",
+                "Clinging does not prevent loss or pain.",
+                "Relationships, possessions, and roles will change.",
+                "The present moment is fleeting."
+            ],
+            renunciation: [
+                "There is no solution to the suffering of samsara; it cannot be fixed.",
+                "However positive worldly life may seem, ultimately it will fail.",
+                "Until we see samsara as a terminal illness, genuine aspiration to practice cannot arise.",
+                "We have no ultimate control over life; recognizing this opens the path.",
+                "Disgust and revulsion for samsara can be trained; repeated reflection develops genuine renunciation.",
+                "Seeking liberation is more important than immediately finding it.",
+                "Worldly achievements cannot bring ultimate satisfaction.",
+                "Attachment to wealth, status, or comfort is inherently unstable.",
+                "Recognizing samsara's limitations clarifies the path to freedom.",
+                "Spiritual seeking arises naturally when samsara's insufficiency is recognized."
+            ],
+            emptiness: [
+                "Nothing exists independently; all phenomena arise in relation.",
+                "There is no fixed self in the flow of mind and body.",
+                "Thoughts and sensations appear, change, and dissolve without a controller.",
+                "Events arise due to causes and conditions, not by themselves.",
+                "Awareness reveals phenomena as empty yet vividly present.",
+                "Experience does not divide into separate 'self' and 'other'; the boundary is a perception, not a fact.",
+                "The sense of a solid, separate self dissolves when awareness is seen directly.",
+                "What we call 'I' is a process of sensing, thinking, and acting, not an independent object.",
+                "The boundary between inner and outer experience arises in the mind, not in reality itself.",
+                "Subject and object are not two fixed things; they are co‑arising events.",
+                "Awareness does not belong to a separate self — it is the field in which everything appears."
+            ],
+            selfCompassion: [
+                "How do I feel right now?",
+                "Difficulty arises, as it arises for all beings.",
+                "May I be free of the suffering, free from anger, irritation, pain, addictions, attachment.",
+                "The body and mind experience tension and ease.",
+                "All beings, including this one, face impermanence.",
+                "Discomfort and struggle are part of the human condition.",
+                "No experience needs to be fixed; it is as it is.",
+                "All phenomena, including myself, arise and dissolve.",
+                "May I have all that I wish for myself",
+                "May I have all that I need to serve all beings",
+                "May everything that happens in my life will help me get closer to Enlightenment"
+            ],
+            bodhicitta: [
+                "All my happiness comes from the kindness of beings.",
+                "All beings have been my mothers in past lives.",
+                "The purpose of my life is to attain Buddhahood for the benefit of all beings.",
+                "I practice not for myself alone, but for the freedom of all beings.",
+                "May my actions be guided by care and compassion.",
+                "The kindness of others supports every moment of my life.",
+                "Compassion arises naturally when we recognize the suffering of beings.",
+                "Every being I encounter has shown me some form of care in the past.",
+                "May my practice benefit those who have helped sustain me.",
+                "Acting for others and self are not separate in the path to awakening."
+            ],
+            dedication: [
+                "May all beings be free from suffering and its causes.",
+                "May all beings find happiness and peace.",
+                "May I continue steadily on the path, with clarity and awareness.",
+                "May I have the resources and conditions to sustain my practice.",
+                "May I have a fulfilling and rewarding job",
+                "May my actions benefit others as well as myself.",
+                "May my life be a support to others' practice and freedom.",
+                "May all beings have the conditions to practice Dharma.",
+                "May clarity and insight arise naturally in my mind.",
+                "May the seeds of awakening grow in all beings.",
+                "May my dedication strengthen with each passing day."
+            ]
+        };
+
+        const visualizations = [
+            "<strong>Work:</strong> I have a meaningful job, working in mindfulness and giving my full potential in a selfless way. The work nourishes me and I help others.",
+            "<strong>Financial:</strong> I have enough money to feel calm about it. I have money to donate and give to others. I feel calm when I check my financial situation. I earn enough money to sustain myself.",
+            "<strong>Relationships:</strong> I have good heart friends that support and help me and I do that for them. I feel friendship with everyone I meet. I feel compassion and love for all beings, including the ones who harm others.",
+            "<strong>Practice:</strong> I practice everyday in the morning, I keep Bodhichitta in mind, so everything I do during the day is in the means to help me reach full enlightenment for the benefit of others.",
+            "<strong>Enlightenment:</strong> Imagine light coming from Buddha Shakyamuni filling me with all his qualities of enlightenment: Love, compassion, happiness, wisdom, realization of emptiness, bodhichitta, renunciation, devotion.",
+            "<strong>Physical Health:</strong> My body is healthy, I have a lot of energy and strength, digestion is working well, my body will live for a long time. I exercise daily.",
+            "<strong>Mental Health:</strong> I am fulfilled and happy, calm, working for other's benefit, joyful and compassionate."
+        ];
+
+        let currentDayIndex = new Date().getDay();
+
+        function getReflectionsForDay(dayIndex) {
+            const seed = dayIndex;
+            const selections = {
+                impermanence: [],
+                renunciation: [],
+                emptiness: [],
+                selfCompassion: [],
+                bodhicitta: [],
+                dedication: []
+            };
+
+            // Select 1-2 items from each category based on day
+            Object.keys(reflections).forEach((category, catIndex) => {
+                const items = reflections[category];
+                const count = (dayIndex + catIndex) % 2 === 0 ? 2 : 1;
+                
+                for (let i = 0; i < count; i++) {
+                    const index = (dayIndex * 3 + catIndex * 2 + i) % items.length;
+                    selections[category].push(items[index]);
+                }
+            });
+
+            return selections;
+        }
+
+        function renderRoutine() {
+            const daySelections = getReflectionsForDay(currentDayIndex);
+            const visualization = visualizations[currentDayIndex % visualizations.length];
+
+            document.getElementById('dayDisplay').textContent = days[currentDayIndex];
+
+            const routineHTML = `
+                <div class="step" id="step-1">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-1" onchange="toggleStep(1)">
+                        <div class="step-title">1. Silent Meditation</div>
+                    </div>
+                </div>
+
+                <div class="step" id="step-2">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-2" onchange="toggleStep(2)">
+                        <div class="step-title">2. Reflections</div>
+                    </div>
+                    <div class="step-content">
+                        <p><strong>Impermanence:</strong></p>
+                        ${daySelections.impermanence.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        
+                        <p style="margin-top: 15px;"><strong>Renunciation:</strong></p>
+                        ${daySelections.renunciation.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        
+                        <p style="margin-top: 15px;"><strong>Emptiness:</strong></p>
+                        ${daySelections.emptiness.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        
+                        <p style="margin-top: 15px;"><strong>Self-Compassion:</strong></p>
+                        ${daySelections.selfCompassion.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        
+                        <p style="margin-top: 15px;"><strong>Bodhicitta:</strong></p>
+                        ${daySelections.bodhicitta.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        
+                        <p style="margin-top: 15px;"><strong>Dedication & Aspiration:</strong></p>
+                        ${daySelections.dedication.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="step" id="step-3">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-3" onchange="toggleStep(3)">
+                        <div class="step-title">3. Visualization</div>
+                    </div>
+                    <div class="step-content">
+                        <p>${visualization}</p>
+                    </div>
+                </div>
+
+                <div class="step" id="step-4">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-4" onchange="toggleStep(4)">
+                        <div class="step-title">4. Scribing</div>
+                    </div>
+                    <div class="step-content">
+                        <p>Journaling, reflection, or free writing. Let your thoughts flow onto the page without judgment or editing.</p>
+                    </div>
+                </div>
+
+                <div class="step" id="step-5">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-5" onchange="toggleStep(5)">
+                        <div class="step-title">5. Reading</div>
+                    </div>
+                    <div class="step-content">
+                        <p>Read a few pages of something nourishing or inspiring. Choose texts that support your practice and understanding.</p>
+                    </div>
+                </div>
+
+                <div class="step" id="step-6">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-6" onchange="toggleStep(6)">
+                        <div class="step-title">6. Exercise</div>
+                    </div>
+                    <div class="step-content">
+                        <p>Gentle movement, yoga, stretching, or walking. Move mindfully, feeling the sensations in your body and breathing naturally.</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('routine').innerHTML = routineHTML;
+            loadCheckboxStates();
+        }
+
+        function toggleStep(stepNumber) {
+            const checkbox = document.getElementById(`checkbox-${stepNumber}`);
+            const step = document.getElementById(`step-${stepNumber}`);
+            
+            if (checkbox.checked) {
+                step.classList.add('completed');
+            } else {
+                step.classList.remove('completed');
+            }
+            
+            saveCheckboxStates();
+        }
+
+        function saveCheckboxStates() {
+            const today = new Date().toDateString();
+            const states = {};
+            
+            for (let i = 1; i <= 6; i++) {
+                const checkbox = document.getElementById(`checkbox-${i}`);
+                if (checkbox) {
+                    states[i] = checkbox.checked;
+                }
+            }
+            
+            localStorage.setItem(`miracle-morning-${today}`, JSON.stringify(states));
+        }
+
+        function loadCheckboxStates() {
+            const today = new Date().toDateString();
+            const savedStates = localStorage.getItem(`miracle-morning-${today}`);
+            
+            if (savedStates) {
+                const states = JSON.parse(savedStates);
+                
+                for (let i = 1; i <= 6; i++) {
+                    const checkbox = document.getElementById(`checkbox-${i}`);
+                    const step = document.getElementById(`step-${i}`);
+                    
+                    if (checkbox && states[i]) {
+                        checkbox.checked = true;
+                        step.classList.add('completed');
+                    }
+                }
+            }
+        }
+
+        function nextDay() {
+            currentDayIndex = (currentDayIndex + 1) % 7;
+            renderRoutine();
+        }
+
+        function previousDay() {
+            currentDayIndex = (currentDayIndex - 1 + 7) % 7;
+            renderRoutine();
+        }
+
+        // Initialize
+        renderRoutine();
+    </script>
+</body>
+</html>
