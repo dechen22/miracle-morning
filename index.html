@@ -106,6 +106,93 @@
             margin-left: 38px;
         }
 
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            background: #C49A93;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            flex: 0;
+        }
+
+        .timer-btn:hover {
+            background: #B08580;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(196, 154, 147, 0.3);
+        }
+
+        .timer-btn:active {
+            transform: translateY(0);
+        }
+
+        .sound-btn {
+            background: #E5E0D8;
+            color: #5A5A5A;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sound-btn:hover {
+            background: #C49A93;
+            color: white;
+        }
+
+        .reflection-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .reflection-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reflection-btn {
+            background: #E5E0D8;
+            color: #5A5A5A;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+
+        .reflection-btn:hover {
+            background: #DDD9D0;
+            transform: translateY(-1px);
+        }
+
+        .reflection-btn.active {
+            background: #C49A93;
+            color: white;
+        }
+
+        .reflection-content {
+            margin-top: 12px;
+            margin-left: 20px;
+        }
+
         .step-content p {
             margin-bottom: 12px;
         }
@@ -204,24 +291,23 @@
         const reflections = {
             impermanence: [
                 "This body will age, become ill, and die.",
-                "I will die; the time of my death is uncertain.",
+                "Death is certain; The time of death is uncertain.",
                 "This moment is part of preparing for death.",
                 "There is no guarantee of time remaining.",
                 "All beings experience suffering and separation.",
-                "Nothing remains fixed; all conditions change.",
+                "Nothing remains fixed; all conditions change moment by moment.",
                 "Clinging does not prevent loss or pain.",
-                "Relationships, possessions, and roles will change.",
-                "The present moment is fleeting."
+                "Relationships, possessions, and roles will change or end."
             ],
             renunciation: [
-                "There is no solution to the suffering of samsara; it cannot be fixed.",
+                "There's no such thing as a person who perfected both Dharma practice and worldly life.",
+                "There are no solutions to the suffering of samsara and it cannot be fixed, true happiness cannot be found there.",
                 "However positive worldly life may seem, ultimately it will fail.",
                 "Until we see samsara as a terminal illness, genuine aspiration to practice cannot arise.",
-                "We have no ultimate control over life; recognizing this opens the path.",
                 "Disgust and revulsion for samsara can be trained; repeated reflection develops genuine renunciation.",
                 "Seeking liberation is more important than immediately finding it.",
                 "Worldly achievements cannot bring ultimate satisfaction.",
-                "Attachment to wealth, status, or comfort is inherently unstable.",
+                "Wealth, status, or comfort are unstable, so any attachment to them will lead to suffering.",
                 "Recognizing samsara's limitations clarifies the path to freedom.",
                 "Spiritual seeking arises naturally when samsara's insufficiency is recognized."
             ],
@@ -230,8 +316,6 @@
                 "There is no fixed self in the flow of mind and body.",
                 "Thoughts and sensations appear, change, and dissolve without a controller.",
                 "Events arise due to causes and conditions, not by themselves.",
-                "Awareness reveals phenomena as empty yet vividly present.",
-                "Experience does not divide into separate 'self' and 'other'; the boundary is a perception, not a fact.",
                 "The sense of a solid, separate self dissolves when awareness is seen directly.",
                 "What we call 'I' is a process of sensing, thinking, and acting, not an independent object.",
                 "The boundary between inner and outer experience arises in the mind, not in reality itself.",
@@ -240,13 +324,12 @@
             ],
             selfCompassion: [
                 "How do I feel right now?",
-                "Difficulty arises, as it arises for all beings.",
-                "May I be free of the suffering, free from anger, irritation, pain, addictions, attachment.",
+                "Difficulty arises for me, as it arises for all beings.",
+                "May I be free of suffering, anger, irritation, pain, addictions, attachment.",
                 "The body and mind experience tension and ease.",
                 "All beings, including this one, face impermanence.",
                 "Discomfort and struggle are part of the human condition.",
                 "No experience needs to be fixed; it is as it is.",
-                "All phenomena, including myself, arise and dissolve.",
                 "May I have all that I wish for myself",
                 "May I have all that I need to serve all beings",
                 "May everything that happens in my life will help me get closer to Enlightenment"
@@ -260,8 +343,7 @@
                 "The kindness of others supports every moment of my life.",
                 "Compassion arises naturally when we recognize the suffering of beings.",
                 "Every being I encounter has shown me some form of care in the past.",
-                "May my practice benefit those who have helped sustain me.",
-                "Acting for others and self are not separate in the path to awakening."
+                "May my practice benefit all beings."
             ],
             dedication: [
                 "May all beings be free from suffering and its causes.",
@@ -273,8 +355,7 @@
                 "May my life be a support to others' practice and freedom.",
                 "May all beings have the conditions to practice Dharma.",
                 "May clarity and insight arise naturally in my mind.",
-                "May the seeds of awakening grow in all beings.",
-                "May my dedication strengthen with each passing day."
+                "May the seeds of awakening grow in all beings."
             ]
         };
 
@@ -286,6 +367,16 @@
             "<strong>Enlightenment:</strong> Imagine light coming from Buddha Shakyamuni filling me with all his qualities of enlightenment: Love, compassion, happiness, wisdom, realization of emptiness, bodhichitta, renunciation, devotion.",
             "<strong>Physical Health:</strong> My body is healthy, I have a lot of energy and strength, digestion is working well, my body will live for a long time. I exercise daily.",
             "<strong>Mental Health:</strong> I am fulfilled and happy, calm, working for other's benefit, joyful and compassionate."
+        ];
+
+        const gratitudes = [
+            "<strong>Body:</strong> My body, its health, different parts, functions and abilities.",
+            "<strong>Family and Friends:</strong> My family, friends, coworkers and acquaintances.",
+            "<strong>Money:</strong> My money, pension, savings, financial support in time of need or emergency.",
+            "<strong>Abilities:</strong> My abilities, talents, knowledge, education.",
+            "<strong>Possessions:</strong> Food, electronics, car, clothes, shoes, cosmetics, furniture. Also electricity, water, sun, plants, air.",
+            "<strong>Spiritual Path:</strong> Meeting the Dharma, practicing, potential of my mind, faith, teachers, dharma centers.",
+            "<strong>Past Support by Others:</strong> Parents, nannies, teachers, professors, food suppliers, cooks, transportation, medical assistance, government facilities, therapists."
         ];
 
         let currentDayIndex = new Date().getDay();
@@ -315,9 +406,175 @@
             return selections;
         }
 
+        let timerInterval = null;
+        let timeLeft = 0;
+
+        function showCustomTimer() {
+            document.getElementById('customTimerInput').style.display = 'block';
+        }
+
+        function startCustomTimer() {
+            const minutes = parseInt(document.getElementById('customMinutes').value);
+            if (minutes && minutes > 0) {
+                startTimer(minutes);
+            }
+        }
+
+        function startTimer(minutes) {
+            // Clear any existing timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // Hide custom input, show timer display
+            document.getElementById('customTimerInput').style.display = 'none';
+            document.getElementById('timerDisplay').style.display = 'block';
+
+            // Set time
+            timeLeft = minutes * 60;
+            updateTimerDisplay();
+
+            // Start countdown
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    playGong();
+                    setTimeout(() => {
+                        document.getElementById('timerDisplay').style.display = 'none';
+                    }, 3000);
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timerDisplay').style.display = 'none';
+            document.getElementById('customTimerInput').style.display = 'none';
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timeRemaining').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function playGong() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            playTibetanBowl(audioContext);
+        }
+
+        function toggleReflection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const button = event.target;
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.classList.add('active');
+            } else {
+                content.style.display = 'none';
+                button.classList.remove('active');
+            }
+        }
+
+        function playBellGong(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 432;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+
+        function playTibetanBowl(audioContext) {
+            const oscillator1 = audioContext.createOscillator();
+            const oscillator2 = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator1.connect(gainNode);
+            oscillator2.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator1.frequency.value = 256;
+            oscillator2.frequency.value = 384;
+            oscillator1.type = 'sine';
+            oscillator2.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 4);
+
+            oscillator1.start(audioContext.currentTime);
+            oscillator2.start(audioContext.currentTime);
+            oscillator1.stop(audioContext.currentTime + 4);
+            oscillator2.stop(audioContext.currentTime + 4);
+        }
+
+        function playDeepGong(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 110;
+            oscillator.type = 'triangle';
+
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.4, audioContext.currentTime + 0.05);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 3);
+        }
+
+        function playChime(audioContext) {
+            const frequencies = [523.25, 659.25, 783.99]; // C, E, G
+            
+            frequencies.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+
+                const startTime = audioContext.currentTime + (index * 0.3);
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.15, startTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 1.5);
+
+                oscillator.start(startTime);
+                oscillator.stop(startTime + 1.5);
+            });
+        }
+
+        function testGongSound(soundType) {
+            localStorage.setItem('gongSound', soundType);
+            playGong();
+        }
+
         function renderRoutine() {
             const daySelections = getReflectionsForDay(currentDayIndex);
             const visualization = visualizations[currentDayIndex % visualizations.length];
+            const gratitude = gratitudes[currentDayIndex % gratitudes.length];
 
             document.getElementById('dayDisplay').textContent = days[currentDayIndex];
 
@@ -325,40 +582,82 @@
                 <div class="step" id="step-1">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-1" onchange="toggleStep(1)">
-                        <div class="step-title">1. Silent Meditation</div>
+                        <div class="step-title">Silent Meditation</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="timer-controls">
+                            <button class="timer-btn" onclick="startTimer(10)">10 min</button>
+                            <button class="timer-btn" onclick="startTimer(20)">20 min</button>
+                            <button class="timer-btn" onclick="startTimer(30)">30 min</button>
+                            <button class="timer-btn" onclick="showCustomTimer()">Custom</button>
+                        </div>
+                        <div id="customTimerInput" style="display: none; margin-top: 16px;">
+                            <input type="number" id="customMinutes" placeholder="Minutes" min="1" max="120" style="padding: 8px; border-radius: 8px; border: 1px solid #E5E0D8; width: 100px; margin-right: 8px;">
+                            <button class="timer-btn" onclick="startCustomTimer()">Start</button>
+                        </div>
+                        <div id="timerDisplay" style="display: none; margin-top: 16px; text-align: center;">
+                            <div style="font-size: 2.5em; font-weight: 600; color: #2D2D2D; margin-bottom: 12px;" id="timeRemaining">00:00</div>
+                            <button class="timer-btn" onclick="stopTimer()" style="background: #B08580;">Stop</button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="step" id="step-2">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-2" onchange="toggleStep(2)">
-                        <div class="step-title">2. Reflections</div>
+                        <div class="step-title">Reflections</div>
                     </div>
                     <div class="step-content">
-                        <p><strong>Impermanence:</strong></p>
-                        ${daySelections.impermanence.map(r => `<div class="reflection-item">${r}</div>`).join('')}
-                        
-                        <p style="margin-top: 15px;"><strong>Renunciation:</strong></p>
-                        ${daySelections.renunciation.map(r => `<div class="reflection-item">${r}</div>`).join('')}
-                        
-                        <p style="margin-top: 15px;"><strong>Emptiness:</strong></p>
-                        ${daySelections.emptiness.map(r => `<div class="reflection-item">${r}</div>`).join('')}
-                        
-                        <p style="margin-top: 15px;"><strong>Self-Compassion:</strong></p>
-                        ${daySelections.selfCompassion.map(r => `<div class="reflection-item">${r}</div>`).join('')}
-                        
-                        <p style="margin-top: 15px;"><strong>Bodhicitta:</strong></p>
-                        ${daySelections.bodhicitta.map(r => `<div class="reflection-item">${r}</div>`).join('')}
-                        
-                        <p style="margin-top: 15px;"><strong>Dedication & Aspiration:</strong></p>
-                        ${daySelections.dedication.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                        <div class="reflection-sections">
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('impermanence')">Impermanence</button>
+                                <div id="impermanence" class="reflection-content" style="display: none;">
+                                    ${daySelections.impermanence.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('renunciation')">Renunciation</button>
+                                <div id="renunciation" class="reflection-content" style="display: none;">
+                                    ${daySelections.renunciation.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('emptiness')">Emptiness</button>
+                                <div id="emptiness" class="reflection-content" style="display: none;">
+                                    ${daySelections.emptiness.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('selfCompassion')">Self-Compassion</button>
+                                <div id="selfCompassion" class="reflection-content" style="display: none;">
+                                    ${daySelections.selfCompassion.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('bodhicitta')">Bodhicitta</button>
+                                <div id="bodhicitta" class="reflection-content" style="display: none;">
+                                    ${daySelections.bodhicitta.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="reflection-section">
+                                <button class="reflection-btn" onclick="toggleReflection('dedication')">Dedication & Aspiration</button>
+                                <div id="dedication" class="reflection-content" style="display: none;">
+                                    ${daySelections.dedication.map(r => `<div class="reflection-item">${r}</div>`).join('')}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="step" id="step-3">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-3" onchange="toggleStep(3)">
-                        <div class="step-title">3. Visualization</div>
+                        <div class="step-title">Visualization</div>
                     </div>
                     <div class="step-content">
                         <p>${visualization}</p>
@@ -368,30 +667,40 @@
                 <div class="step" id="step-4">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-4" onchange="toggleStep(4)">
-                        <div class="step-title">4. Scribing</div>
+                        <div class="step-title">Gratitude</div>
                     </div>
                     <div class="step-content">
-                        <p>Journaling, reflection, or free writing. Let your thoughts flow onto the page without judgment or editing.</p>
+                        <p>${gratitude}</p>
                     </div>
                 </div>
 
                 <div class="step" id="step-5">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-5" onchange="toggleStep(5)">
-                        <div class="step-title">5. Reading</div>
+                        <div class="step-title">Journaling</div>
                     </div>
                     <div class="step-content">
-                        <p>Read a few pages of something nourishing or inspiring. Choose texts that support your practice and understanding.</p>
+                        <p>Let your thoughts flow onto the page without judgment or editing.</p>
                     </div>
                 </div>
 
                 <div class="step" id="step-6">
                     <div class="step-header">
                         <input type="checkbox" class="step-checkbox" id="checkbox-6" onchange="toggleStep(6)">
-                        <div class="step-title">6. Exercise</div>
+                        <div class="step-title">Reading</div>
                     </div>
                     <div class="step-content">
-                        <p>Gentle movement, yoga, stretching, or walking. Move mindfully, feeling the sensations in your body and breathing naturally.</p>
+                        <p>Read a few pages of something nourishing or inspiring.</p>
+                    </div>
+                </div>
+
+                <div class="step" id="step-7">
+                    <div class="step-header">
+                        <input type="checkbox" class="step-checkbox" id="checkbox-7" onchange="toggleStep(7)">
+                        <div class="step-title">Exercise</div>
+                    </div>
+                    <div class="step-content">
+                        <p>Gentle movement, yoga, stretching, or walking.</p>
                     </div>
                 </div>
             `;
@@ -417,7 +726,7 @@
             const today = new Date().toDateString();
             const states = {};
             
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= 7; i++) {
                 const checkbox = document.getElementById(`checkbox-${i}`);
                 if (checkbox) {
                     states[i] = checkbox.checked;
@@ -434,7 +743,7 @@
             if (savedStates) {
                 const states = JSON.parse(savedStates);
                 
-                for (let i = 1; i <= 6; i++) {
+                for (let i = 1; i <= 7; i++) {
                     const checkbox = document.getElementById(`checkbox-${i}`);
                     const step = document.getElementById(`step-${i}`);
                     
