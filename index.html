@@ -370,23 +370,23 @@
         };
 
         const visualizations = [
-            "<strong>Work:</strong> I have a meaningful job, working in mindfulness and giving my full potential in a selfless way. The work nourishes me and I help others.",
-            "<strong>Financial:</strong> I have enough money to feel calm about it. I have money to donate and give to others. I feel calm when I check my financial situation. I earn enough money to sustain myself.",
-            "<strong>Relationships:</strong> I have good heart friends that support and help me and I do that for them. I feel friendship with everyone I meet. I feel compassion and love for all beings, including the ones who harm others.",
-            "<strong>Practice:</strong> I practice everyday in the morning, I keep Bodhichitta in mind, so everything I do during the day is in the means to help me reach full enlightenment for the benefit of others.",
-            "<strong>Enlightenment:</strong> Imagine light coming from Buddha Shakyamuni filling me with all his qualities of enlightenment: Love, compassion, happiness, wisdom, realization of emptiness, bodhichitta, renunciation, devotion.",
-            "<strong>Physical Health:</strong> My body is healthy, I have a lot of energy and strength, digestion is working well, my body will live for a long time. I exercise daily.",
-            "<strong>Mental Health:</strong> I am fulfilled and happy, calm, working for other's benefit, joyful and compassionate."
+            "<strong>Work:</strong><br>I have a meaningful job, working in mindfulness and giving my full potential in a selfless way. The work nourishes me and I help others.",
+            "<strong>Financial:</strong><br>I have enough money to feel calm about it. I have money to donate and give to others. I feel calm when I check my financial situation. I earn enough money to sustain myself.",
+            "<strong>Relationships:</strong><br>I have good heart friends that support and help me and I do that for them. I feel friendship with everyone I meet. I feel compassion and love for all beings, including the ones who harm others.",
+            "<strong>Practice:</strong><br>I practice everyday in the morning, I keep Bodhichitta in mind, so everything I do during the day is in the means to help me reach full enlightenment for the benefit of others.",
+            "<strong>Enlightenment:</strong><br>Imagine light coming from Buddha Shakyamuni filling me with all his qualities of enlightenment: Love, compassion, happiness, wisdom, realization of emptiness, bodhichitta, renunciation, devotion.",
+            "<strong>Physical Health:</strong><br>My body is healthy, I have a lot of energy and strength, digestion is working well, my body will live for a long time. I exercise daily.",
+            "<strong>Mental Health:</strong><br>I am fulfilled and happy, calm, working for other's benefit, joyful and compassionate."
         ];
 
         const gratitudes = [
-            "<strong>Body:</strong> My body, its health, different parts, functions and abilities.",
-            "<strong>Family and Friends:</strong> My family, friends, coworkers and acquaintances.",
-            "<strong>Money:</strong> My money, pension, savings, financial support in time of need or emergency.",
-            "<strong>Abilities:</strong> My abilities, talents, knowledge, education.",
-            "<strong>Possessions:</strong> Food, electronics, car, clothes, shoes, cosmetics, furniture. Also electricity, water, sun, plants, air.",
-            "<strong>Spiritual Path:</strong> Meeting the Dharma, practicing, potential of my mind, faith, teachers, dharma centers.",
-            "<strong>Past Support by Others:</strong> Parents, nannies, teachers, professors, food suppliers, cooks, transportation, medical assistance, government facilities, therapists."
+            "<strong>Body:</strong><br>My body, its health, different parts, functions and abilities.",
+            "<strong>Family and Friends:</strong><br>My family, friends, coworkers and acquaintances.",
+            "<strong>Money:</strong><br>My money, pension, savings, financial support in time of need or emergency.",
+            "<strong>Abilities:</strong><br>My abilities, talents, knowledge, education.",
+            "<strong>Possessions:</strong><br>Food, electronics, car, clothes, shoes, cosmetics, furniture. Also electricity, water, sun, plants, air.",
+            "<strong>Spiritual Path:</strong><br>Meeting the Dharma, practicing, potential of my mind, faith, teachers, dharma centers.",
+            "<strong>Past Support by Others:</strong><br>Parents, nannies, teachers, professors, food suppliers, cooks, transportation, medical assistance, government facilities, therapists."
         ];
 
         let currentDayIndex = new Date().getDay();
@@ -669,8 +669,7 @@
                         <input type="checkbox" class="step-checkbox" id="checkbox-3" onchange="toggleStep(3)">
                         <div class="step-title">Visualization</div>
                     </div>
-                    <div class="step-content">
-                        <p>${visualization}</p>
+                    <div class="step-content" id="visualization-content">
                     </div>
                 </div>
 
@@ -679,8 +678,7 @@
                         <input type="checkbox" class="step-checkbox" id="checkbox-4" onchange="toggleStep(4)">
                         <div class="step-title">Gratitude</div>
                     </div>
-                    <div class="step-content">
-                        <p>${gratitude}</p>
+                    <div class="step-content" id="gratitude-content">
                     </div>
                 </div>
 
@@ -716,6 +714,11 @@
             `;
 
             document.getElementById('routine').innerHTML = routineHTML;
+            
+            // Set HTML content for visualization and gratitude
+            document.getElementById('visualization-content').innerHTML = visualization;
+            document.getElementById('gratitude-content').innerHTML = gratitude;
+            
             loadCheckboxStates();
         }
 
