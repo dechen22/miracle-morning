@@ -418,6 +418,25 @@
 
         let timerInterval = null;
         let timeLeft = 0;
+        let startTime = 0;
+        let wakeLock = null;
+
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log('Wake Lock not supported or failed:', err);
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        }
 
         function showCustomTimer() {
             document.getElementById('customTimerInput').style.display = 'block';
@@ -430,7 +449,10 @@
             }
         }
 
-        function startTimer(minutes) {
+        async function startTimer(minutes) {
+            // Request wake lock to keep screen on
+            await requestWakeLock();
+            
             // Clear any existing timer
             if (timerInterval) {
                 clearInterval(timerInterval);
@@ -440,23 +462,63 @@
             document.getElementById('customTimerInput').style.display = 'none';
             document.getElementById('timerDisplay').style.display = 'block';
 
-            // Set time
+            // Set time and start time for background calculation
             timeLeft = minutes * 60;
+            startTime = Date.now();
             updateTimerDisplay();
 
             // Start countdown
             timerInterval = setInterval(() => {
-                timeLeft--;
+                // Calculate time based on actual elapsed time (more accurate)
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timeLeft = Math.max(0, (minutes * 60) - elapsed);
+                
                 updateTimerDisplay();
 
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
+                    releaseWakeLock();
                     playGong();
                     setTimeout(() => {
                         document.getElementById('timerDisplay').style.display = 'none';
                     }, 3000);
                 }
             }, 1000);
+
+            // Handle visibility change (when screen goes off/on)
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                // Page is hidden - store current state
+                if (timerInterval) {
+                    localStorage.setItem('timerStartTime', startTime.toString());
+                    localStorage.setItem('timerDuration', ((timeLeft + Math.floor((Date.now() - startTime) / 1000)) * 1000).toString());
+                }
+            } else {
+                // Page is visible again - check if timer should still be running
+                const savedStartTime = localStorage.getItem('timerStartTime');
+                const savedDuration = localStorage.getItem('timerDuration');
+                
+                if (savedStartTime && savedDuration && timerInterval) {
+                    const elapsed = Date.now() - parseInt(savedStartTime);
+                    const remaining = parseInt(savedDuration) - elapsed;
+                    
+                    if (remaining > 0) {
+                        timeLeft = Math.floor(remaining / 1000);
+                        updateTimerDisplay();
+                    } else {
+                        // Timer should have finished
+                        stopTimer();
+                        playGong();
+                    }
+                }
+                
+                // Clear saved data
+                localStorage.removeItem('timerStartTime');
+                localStorage.removeItem('timerDuration');
+            }
         }
 
         function stopTimer() {
@@ -464,8 +526,16 @@
                 clearInterval(timerInterval);
                 timerInterval = null;
             }
+            releaseWakeLock();
             document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('customTimerInput').style.display = 'none';
+            
+            // Remove visibility change listener
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            
+            // Clear saved timer data
+            localStorage.removeItem('timerStartTime');
+            localStorage.removeItem('timerDuration');
         }
 
         function updateTimerDisplay() {
