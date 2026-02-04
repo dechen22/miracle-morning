@@ -420,6 +420,18 @@
         let timeLeft = 0;
         let startTime = 0;
         let wakeLock = null;
+        let audioContext = null; // Global audio context
+
+        // Initialize audio context on first user interaction
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            return audioContext;
+        }
 
         async function requestWakeLock() {
             try {
@@ -546,14 +558,32 @@
         }
 
         function playGong() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            // Resume audio context if suspended (required by browser autoplay policies)
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    playTibetanBowl(audioContext);
-                });
-            } else {
-                playTibetanBowl(audioContext);
+            try {
+                // Use global context if available, otherwise create new one
+                const ctx = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+                
+                // For mobile: must resume in same user gesture
+                const resumeAndPlay = () => {
+                    if (ctx.state === 'suspended') {
+                        ctx.resume().then(() => {
+                            playTibetanBowl(ctx);
+                        }).catch(err => {
+                            console.error('Audio resume failed:', err);
+                        });
+                    } else {
+                        playTibetanBowl(ctx);
+                    }
+                };
+                
+                resumeAndPlay();
+                
+                // Store context for later use
+                if (!audioContext) {
+                    audioContext = ctx;
+                }
+            } catch (err) {
+                console.error('Audio playback failed:', err);
+                alert('Sound not available. Please check your device volume and browser settings.');
             }
         }
 
