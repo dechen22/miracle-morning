@@ -420,15 +420,37 @@
         let timeLeft = 0;
         let startTime = 0;
         let wakeLock = null;
-        let bellAudio = null; // Audio element for bell
+        let audioInitialized = false;
 
-        // Initialize audio element - using a meditation bell sound
-        function initBellAudio() {
-            if (!bellAudio) {
-                bellAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
-                bellAudio.volume = 0.7;
+        // Simple bell sound using Web Audio - initialized on first user interaction
+        function playGong() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create a simple pleasant bell tone
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Bell-like frequency
+                oscillator.frequency.value = 528; // Solfeggio frequency
+                oscillator.type = 'sine';
+                
+                // Envelope: quick attack, slow decay
+                const now = audioContext.currentTime;
+                gainNode.gain.setValueAtTime(0, now);
+                gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+                
+                oscillator.start(now);
+                oscillator.stop(now + 2.5);
+                
+                audioInitialized = true;
+            } catch (err) {
+                console.error('Audio error:', err);
             }
-            return bellAudio;
         }
 
         async function requestWakeLock() {
@@ -555,18 +577,6 @@
                 `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function playGong() {
-            try {
-                const audio = initBellAudio();
-                audio.currentTime = 0; // Reset to start
-                audio.play().catch(err => {
-                    console.error('Audio playback failed:', err);
-                });
-            } catch (err) {
-                console.error('Audio initialization failed:', err);
-            }
-        }
-
         function toggleReflection(sectionId) {
             const content = document.getElementById(sectionId);
             const button = event.target;
@@ -682,12 +692,15 @@
                         <div class="step-title">Silent Meditation</div>
                     </div>
                     <div class="step-content">
+                        <p style="background: #FFF9E6; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9em; color: #8B6914;">
+                            📱 <strong>First time?</strong> Tap "Test Bell" once to enable sound on your device.
+                        </p>
                         <div class="timer-controls">
+                            <button class="sound-btn" onclick="playGong()" style="background: #C49A93; color: white; font-weight: 600;">🔔 Test Bell First</button>
                             <button class="timer-btn" onclick="startTimer(10)">10 min</button>
                             <button class="timer-btn" onclick="startTimer(20)">20 min</button>
                             <button class="timer-btn" onclick="startTimer(30)">30 min</button>
                             <button class="timer-btn" onclick="showCustomTimer()">Custom</button>
-                            <button class="sound-btn" onclick="playGong()" title="Test bell sound">🔔 Test Bell</button>
                         </div>
                         <div id="customTimerInput" style="display: none; margin-top: 16px;">
                             <input type="number" id="customMinutes" placeholder="Minutes" min="1" max="120" style="padding: 8px; border-radius: 8px; border: 1px solid #E5E0D8; width: 100px; margin-right: 8px;">
