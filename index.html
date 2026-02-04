@@ -547,7 +547,14 @@
 
         function playGong() {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            playTibetanBowl(audioContext);
+            // Resume audio context if suspended (required by browser autoplay policies)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    playTibetanBowl(audioContext);
+                });
+            } else {
+                playTibetanBowl(audioContext);
+            }
         }
 
         function toggleReflection(sectionId) {
@@ -670,6 +677,7 @@
                             <button class="timer-btn" onclick="startTimer(20)">20 min</button>
                             <button class="timer-btn" onclick="startTimer(30)">30 min</button>
                             <button class="timer-btn" onclick="showCustomTimer()">Custom</button>
+                            <button class="sound-btn" onclick="playGong()" title="Test bell sound">🔔 Test Bell</button>
                         </div>
                         <div id="customTimerInput" style="display: none; margin-top: 16px;">
                             <input type="number" id="customMinutes" placeholder="Minutes" min="1" max="120" style="padding: 8px; border-radius: 8px; border: 1px solid #E5E0D8; width: 100px; margin-right: 8px;">
