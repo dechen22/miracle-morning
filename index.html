@@ -420,17 +420,15 @@
         let timeLeft = 0;
         let startTime = 0;
         let wakeLock = null;
-        let audioContext = null; // Global audio context
+        let bellAudio = null; // Audio element for bell
 
-        // Initialize audio context on first user interaction
-        function initAudioContext() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // Initialize audio element - using a meditation bell sound
+        function initBellAudio() {
+            if (!bellAudio) {
+                bellAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+                bellAudio.volume = 0.7;
             }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-            return audioContext;
+            return bellAudio;
         }
 
         async function requestWakeLock() {
@@ -559,31 +557,13 @@
 
         function playGong() {
             try {
-                // Use global context if available, otherwise create new one
-                const ctx = audioContext || new (window.AudioContext || window.webkitAudioContext)();
-                
-                // For mobile: must resume in same user gesture
-                const resumeAndPlay = () => {
-                    if (ctx.state === 'suspended') {
-                        ctx.resume().then(() => {
-                            playTibetanBowl(ctx);
-                        }).catch(err => {
-                            console.error('Audio resume failed:', err);
-                        });
-                    } else {
-                        playTibetanBowl(ctx);
-                    }
-                };
-                
-                resumeAndPlay();
-                
-                // Store context for later use
-                if (!audioContext) {
-                    audioContext = ctx;
-                }
+                const audio = initBellAudio();
+                audio.currentTime = 0; // Reset to start
+                audio.play().catch(err => {
+                    console.error('Audio playback failed:', err);
+                });
             } catch (err) {
-                console.error('Audio playback failed:', err);
-                alert('Sound not available. Please check your device volume and browser settings.');
+                console.error('Audio initialization failed:', err);
             }
         }
 
