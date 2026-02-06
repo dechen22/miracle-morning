@@ -808,7 +808,7 @@
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         // Version for data structure - increment when default data changes significantly
-        const DATA_VERSION = 5;
+        const DATA_VERSION = 6;
 
         // Default data
         const defaultData = {
@@ -827,13 +827,13 @@
                 },
                 {
                     id: 'gratitude',
-                    title: 'Gratitude\nfor what\'s already here',
+                    title: 'Gratitude\nwhat\'s already here',
                     type: 'daily',
                     order: 3
                 },
                 {
                     id: 'visualization',
-                    title: 'Visualization\nof my goals',
+                    title: 'Visualization\nmy goals',
                     type: 'daily',
                     order: 4
                 },
@@ -995,10 +995,10 @@
                         } else if (section.id === 'reflections') {
                             section.title = 'Meditation Reflections';
                         } else if (section.id === 'visualization') {
-                            section.title = 'Visualization\nof my goals';
+                            section.title = 'Visualization\nmy goals';
                             section.order = 4; // Move after gratitude
                         } else if (section.id === 'gratitude') {
-                            section.title = 'Gratitude\nfor what\'s already here';
+                            section.title = 'Gratitude\nwhat\'s already here';
                             section.order = 3; // Move before visualization
                         }
                     });
@@ -1528,7 +1528,7 @@
         function openSimpleTextModal(sectionId) {
             const section = customizations.sections.find(s => s.id === sectionId);
             
-            const displayTitle = section.title.replace('\n', ' ');
+            const displayTitle = section.title.split('\n')[0];
             const content = `
                 <h2>Edit ${displayTitle}</h2>
                 <div class="form-group">
@@ -1613,7 +1613,7 @@
                 const content = `
                     <div style="display: flex; flex-direction: column; height: 75vh;">
                         <div style="margin-bottom: 12px;">
-                            <h2 style="margin-bottom: 8px;">Edit ${section.title.replace('\n', ' ')}</h2>
+                            <h2 style="margin-bottom: 8px;">Edit ${section.title.split('\n')[0]}</h2>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label>Section Name</label>
                                 <input type="text" id="editDailySectionTitle" value="${section.title}">
