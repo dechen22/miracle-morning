@@ -1889,7 +1889,14 @@
                     title: 'New Category',
                     items: ['New reflection...']
                 };
-                renderAllReflections(true); // Preserve scroll when adding
+                renderAllReflections(false);
+                // Scroll to bottom to show new category
+                setTimeout(() => {
+                    const scrollContainer = document.querySelector('[data-scroll-container]');
+                    if (scrollContainer) {
+                        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+                    }
+                }, 50);
             };
             
             window.saveAllReflections = function() {
