@@ -133,8 +133,8 @@
 
         .step-header {
             display: flex;
-            align-items: center;
-            gap: 16px;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .drag-handle {
@@ -168,6 +168,7 @@
             cursor: pointer;
             accent-color: #C49A93;
             flex-shrink: 0;
+            margin-top: 1px;
         }
 
         .step-title {
@@ -498,6 +499,33 @@
             border-style: solid;
         }
 
+        .cancel-changes-btn {
+            background: #E5E0D8;
+            color: #5A5A5A;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+            width: 100%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .edit-mode .cancel-changes-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cancel-changes-btn:hover {
+            background: #B08580;
+            color: white;
+            transform: translateY(-1px);
+        }
+
         .reset-btn {
             background: #E5E0D8;
             color: #5A5A5A;
@@ -560,6 +588,133 @@
             background: #C49A93;
             color: white;
         }
+
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+
+            .container {
+                padding: 20px 16px;
+                border-radius: 18px;
+            }
+
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+                padding-right: 36px;
+            }
+
+            .edit-mode-toggle {
+                width: 34px;
+                height: 34px;
+                font-size: 1em;
+            }
+
+            .step {
+                padding: 16px;
+                margin-bottom: 14px;
+                border-radius: 12px;
+            }
+
+            .step-header {
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .step-title {
+                font-size: 1em;
+                line-height: 1.3;
+            }
+
+            .step-checkbox {
+                width: 20px;
+                height: 20px;
+                margin-top: 2px;
+            }
+
+            .drag-handle {
+                font-size: 1em;
+                margin-top: 2px;
+            }
+
+            .edit-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8em;
+                flex-shrink: 0;
+                margin-top: 0;
+            }
+
+            .step-content {
+                margin-left: 0;
+                margin-top: 12px;
+                font-size: 0.9em;
+            }
+
+            .timer-btn {
+                padding: 6px 10px;
+                font-size: 0.75em;
+            }
+
+            .day-navigation {
+                gap: 8px;
+            }
+
+            .day-nav-btn {
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+
+            /* Modal mobile */
+            .modal {
+                padding: 20px 16px;
+                border-radius: 16px;
+                max-height: 85vh;
+            }
+
+            .modal h2 {
+                font-size: 1.25em;
+                margin-bottom: 16px;
+            }
+
+            .modal-buttons {
+                gap: 8px;
+            }
+
+            .modal-btn {
+                padding: 10px 12px;
+                font-size: 0.85em;
+            }
+
+            .reflection-btn {
+                padding: 10px 14px;
+                font-size: 0.85em;
+            }
+
+            .reflection-content {
+                margin-left: 12px;
+            }
+
+            .day-tabs {
+                gap: 6px;
+            }
+
+            .day-tab {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+
+            .add-section-btn {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -574,6 +729,7 @@
 
         <button class="add-section-btn" onclick="openAddSectionModal()">+ Add New Section</button>
         
+        <button class="cancel-changes-btn" onclick="cancelChanges()">Cancel Changes</button>
         <button class="reset-btn" onclick="confirmReset()">Reset to Defaults</button>
         
         <div class="day-navigation" style="margin-top: 20px;">
@@ -814,6 +970,7 @@
 
         // Get current customizations
         let customizations = loadCustomizations();
+        let editSnapshot = null;
 
         // Toggle edit mode
         function toggleEditMode() {
@@ -822,16 +979,34 @@
             const container = document.querySelector('.container');
             
             if (editMode) {
+                // Snapshot current state before editing
+                editSnapshot = JSON.stringify(customizations);
                 toggle.classList.add('active');
                 toggle.textContent = '✓';
                 container.classList.add('edit-mode');
             } else {
+                editSnapshot = null;
                 toggle.classList.remove('active');
                 toggle.textContent = '✏️';
                 container.classList.remove('edit-mode');
             }
             
             // Re-render to update draggable attributes
+            renderRoutine();
+        }
+
+        function cancelChanges() {
+            if (editSnapshot) {
+                customizations = JSON.parse(editSnapshot);
+                saveCustomizations(customizations);
+            }
+            editMode = false;
+            editSnapshot = null;
+            const toggle = document.querySelector('.edit-mode-toggle');
+            const container = document.querySelector('.container');
+            toggle.classList.remove('active');
+            toggle.textContent = '✏️';
+            container.classList.remove('edit-mode');
             renderRoutine();
         }
 
@@ -993,6 +1168,9 @@
         }
 
         async function startTimerWithMinutes(minutes) {
+            // Unlock audio on user gesture for iOS
+            getAudioContext();
+            
             if (timerInterval) {
                 stopTimer();
             }
@@ -1042,9 +1220,110 @@
             document.getElementById('timerDisplay').style.display = 'none';
         }
 
+        // Web Audio API meditation bell - works on iOS Safari
+        let audioCtx = null;
+        
+        function getAudioContext() {
+            if (!audioCtx || audioCtx.state === 'closed') {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
         function playGong() {
-            const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=');
-            audio.play().catch(e => console.log('Audio play failed:', e));
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                
+                const masterGain = ctx.createGain();
+                masterGain.gain.setValueAtTime(0.6, now);
+                masterGain.gain.setTargetAtTime(0.0, now + 0.3, 1.8);
+                masterGain.connect(ctx.destination);
+
+                // Singing bowl fundamentals and overtones
+                const partials = [
+                    { freq: 220,    gain: 0.35, decay: 4.0 },
+                    { freq: 440,    gain: 0.25, decay: 3.5 },
+                    { freq: 587.33, gain: 0.12, decay: 2.8 },
+                    { freq: 880,    gain: 0.08, decay: 2.2 },
+                    { freq: 1174.7, gain: 0.04, decay: 1.6 },
+                    { freq: 1318.5, gain: 0.025, decay: 1.2 },
+                ];
+
+                partials.forEach(p => {
+                    const osc = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(p.freq, now);
+                    // Subtle pitch drift like a real bowl
+                    osc.frequency.setTargetAtTime(p.freq * 0.998, now + 0.5, 2.0);
+                    
+                    g.gain.setValueAtTime(0.0, now);
+                    // Soft attack
+                    g.gain.linearRampToValueAtTime(p.gain, now + 0.04);
+                    // Long natural decay
+                    g.gain.setTargetAtTime(0.0, now + 0.1, p.decay * 0.45);
+                    
+                    osc.connect(g);
+                    g.connect(masterGain);
+                    osc.start(now);
+                    osc.stop(now + p.decay + 2);
+                });
+
+                // Soft metallic shimmer via filtered noise on strike
+                const bufferSize = ctx.sampleRate * 0.15;
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * 0.3;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = noiseBuffer;
+                const noiseBP = ctx.createBiquadFilter();
+                noiseBP.type = 'bandpass';
+                noiseBP.frequency.setValueAtTime(3000, now);
+                noiseBP.Q.setValueAtTime(2, now);
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.06, now);
+                noiseGain.gain.setTargetAtTime(0.0, now, 0.06);
+                noise.connect(noiseBP);
+                noiseBP.connect(noiseGain);
+                noiseGain.connect(masterGain);
+                noise.start(now);
+
+                // Second softer strike
+                setTimeout(() => {
+                    try {
+                        const now2 = ctx.currentTime;
+                        const mg2 = ctx.createGain();
+                        mg2.gain.setValueAtTime(0.3, now2);
+                        mg2.gain.setTargetAtTime(0.0, now2 + 0.3, 1.8);
+                        mg2.connect(ctx.destination);
+
+                        partials.forEach(p => {
+                            const osc = ctx.createOscillator();
+                            const g = ctx.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(p.freq, now2);
+                            osc.frequency.setTargetAtTime(p.freq * 0.998, now2 + 0.5, 2.0);
+                            g.gain.setValueAtTime(0.0, now2);
+                            g.gain.linearRampToValueAtTime(p.gain * 0.5, now2 + 0.04);
+                            g.gain.setTargetAtTime(0.0, now2 + 0.1, p.decay * 0.4);
+                            osc.connect(g);
+                            g.connect(mg2);
+                            osc.start(now2);
+                            osc.stop(now2 + p.decay + 1.5);
+                        });
+                    } catch(e) { console.log('Second bell failed:', e); }
+                }, 2500);
+                
+            } catch(e) {
+                console.log('Bell sound failed:', e);
+            }
         }
 
         function playGongAndHideAnnouncement() {
