@@ -163,6 +163,11 @@
             opacity: 0.5;
         }
 
+        .step.drag-over {
+            border-color: #C49A93;
+            box-shadow: 0 0 0 2px rgba(196, 154, 147, 0.3);
+        }
+
         .step-checkbox {
             width: 18px;
             height: 18px;
@@ -326,8 +331,8 @@
             padding: 32px;
             max-width: 600px;
             width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-height: 85vh;
+            overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
@@ -667,6 +672,7 @@
             .drag-handle {
                 font-size: 1em;
                 margin-top: 2px;
+                padding: 8px 4px;
             }
 
             .edit-btn {
@@ -1768,10 +1774,10 @@
                     });
                     
                     categoriesHTML += `
-                        <div style="background: white; padding: 24px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E5E0D8; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                            <div style="display: flex; gap: 12px; margin-bottom: 20px; align-items: center;">
-                                <input type="text" value="${category.title}" onchange="updateCategoryTitleInPlace('${key}', this.value)" style="flex: 1; font-weight: 600; font-size: 1.1em; padding: 12px 16px; border: 2px solid #E5E0D8; border-radius: 10px; background: #F5F1EA; transition: all 0.2s ease;" onfocus="this.style.borderColor='#C49A93'; this.style.background='white'" onblur="this.style.borderColor='#E5E0D8'; this.style.background='#F5F1EA'">
-                                <button onclick="event.stopPropagation(); deleteCategoryTemp('${key}'); return false;" style="background: #FFE5E5; border: none; color: #d68a7f; cursor: pointer; font-size: 1.1em; padding: 10px 14px; border-radius: 10px; transition: all 0.2s ease; font-weight: 500; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='#d68a7f'; this.style.color='white'" onmouseout="this.style.background='#FFE5E5'; this.style.color='#d68a7f'">×</button>
+                        <div style="background: white; padding: 16px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E5E0D8; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                            <div style="display: flex; gap: 8px; margin-bottom: 16px; align-items: center;">
+                                <input type="text" value="${category.title}" onchange="updateCategoryTitleInPlace('${key}', this.value)" style="flex: 1; font-weight: 600; font-size: 1em; padding: 10px 12px; border: 2px solid #E5E0D8; border-radius: 10px; background: #F5F1EA; transition: all 0.2s ease; min-width: 0;" onfocus="this.style.borderColor='#C49A93'; this.style.background='white'" onblur="this.style.borderColor='#E5E0D8'; this.style.background='#F5F1EA'">
+                                <button onclick="event.stopPropagation(); deleteCategoryTemp('${key}'); return false;" style="background: #FFE5E5; border: none; color: #d68a7f; cursor: pointer; font-size: 1em; padding: 0; border-radius: 8px; transition: all 0.2s ease; font-weight: 500; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" onmouseover="this.style.background='#d68a7f'; this.style.color='white'" onmouseout="this.style.background='#FFE5E5'; this.style.color='#d68a7f'">×</button>
                             </div>
                             <div style="margin-left: 0;">
                                 ${itemsHTML}
@@ -1782,15 +1788,19 @@
                 }
                 
                 const content = `
-                    <h2 style="margin-bottom: 8px;">Edit Reflections</h2>
-                    <p style="color: #5A5A5A; font-size: 0.9em; margin-bottom: 24px;">Edit categories and reflection items below</p>
-                    <div data-scroll-container style="max-height: 55vh; overflow-y: auto; margin: 0 -8px; padding: 0 8px;">
-                        ${categoriesHTML}
-                    </div>
-                    <button onclick="event.stopPropagation(); addNewCategoryTemp(); return false;" style="background: #F5F1EA; border: 1.5px dashed #C49A93; color: #C49A93; cursor: pointer; padding: 10px; border-radius: 8px; font-size: 0.85em; font-weight: 500; width: 100%; transition: all 0.2s ease; margin-top: 12px;" onmouseover="this.style.background='#C49A93'; this.style.color='white'; this.style.borderStyle='solid'" onmouseout="this.style.background='#F5F1EA'; this.style.color='#C49A93'; this.style.borderStyle='dashed'">+ Add New Category</button>
-                    <div class="modal-buttons" style="margin-top: 12px;">
-                        <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
-                        <button class="modal-btn primary" onclick="saveAllReflections()">Save All</button>
+                    <div style="display: flex; flex-direction: column; max-height: 75vh;">
+                        <h2 style="margin-bottom: 8px;">Edit Reflections</h2>
+                        <p style="color: #5A5A5A; font-size: 0.9em; margin-bottom: 16px;">Edit categories and reflection items below</p>
+                        <div data-scroll-container style="flex: 1; overflow-y: auto; margin: 0 -8px; padding: 0 8px; min-height: 0;">
+                            ${categoriesHTML}
+                        </div>
+                        <div style="flex-shrink: 0; padding-top: 8px;">
+                            <button onclick="event.stopPropagation(); addNewCategoryTemp(); return false;" style="background: #F5F1EA; border: 1.5px dashed #C49A93; color: #C49A93; cursor: pointer; padding: 10px; border-radius: 8px; font-size: 0.85em; font-weight: 500; width: 100%; transition: all 0.2s ease;" onmouseover="this.style.background='#C49A93'; this.style.color='white'; this.style.borderStyle='solid'" onmouseout="this.style.background='#F5F1EA'; this.style.color='#C49A93'; this.style.borderStyle='dashed'">+ Add New Category</button>
+                            <div class="modal-buttons" style="margin-top: 10px;">
+                                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+                                <button class="modal-btn primary" onclick="saveAllReflections()">Save All</button>
+                            </div>
+                        </div>
                     </div>
                 `;
                 
@@ -2142,17 +2152,115 @@
         }
 
         // Drag and drop functionality
+        let touchDragElement = null;
+        let touchDragClone = null;
+        let touchStartY = 0;
+        let touchOffsetY = 0;
+
         function updateDragHandlers() {
             const steps = document.querySelectorAll('.step');
             
             steps.forEach(step => {
+                // Desktop drag
                 step.addEventListener('dragstart', handleDragStart);
                 step.addEventListener('dragend', handleDragEnd);
                 step.addEventListener('dragover', handleDragOver);
                 step.addEventListener('drop', handleDrop);
                 step.addEventListener('dragenter', handleDragEnter);
                 step.addEventListener('dragleave', handleDragLeave);
+
+                // Mobile touch drag via handle
+                const handle = step.querySelector('.drag-handle');
+                if (handle) {
+                    handle.addEventListener('touchstart', handleTouchStart, { passive: false });
+                }
             });
+        }
+
+        function handleTouchStart(e) {
+            if (!editMode) return;
+            e.preventDefault();
+            
+            const step = this.closest('.step');
+            touchDragElement = step;
+            const touch = e.touches[0];
+            const rect = step.getBoundingClientRect();
+            touchOffsetY = touch.clientY - rect.top;
+            
+            // Create visual clone
+            touchDragClone = step.cloneNode(true);
+            touchDragClone.style.position = 'fixed';
+            touchDragClone.style.left = rect.left + 'px';
+            touchDragClone.style.top = rect.top + 'px';
+            touchDragClone.style.width = rect.width + 'px';
+            touchDragClone.style.opacity = '0.85';
+            touchDragClone.style.zIndex = '9999';
+            touchDragClone.style.pointerEvents = 'none';
+            touchDragClone.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
+            touchDragClone.style.transform = 'scale(1.02)';
+            touchDragClone.style.transition = 'none';
+            document.body.appendChild(touchDragClone);
+            
+            step.style.opacity = '0.3';
+            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+        }
+
+        function handleTouchMove(e) {
+            if (!touchDragElement || !touchDragClone) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            touchDragClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+            
+            // Find which step we're over
+            const steps = document.querySelectorAll('.step');
+            steps.forEach(step => {
+                step.classList.remove('drag-over');
+                if (step === touchDragElement) return;
+                const rect = step.getBoundingClientRect();
+                if (touch.clientY > rect.top && touch.clientY < rect.bottom) {
+                    step.classList.add('drag-over');
+                }
+            });
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchDragElement) return;
+            
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+            
+            // Find target
+            const steps = document.querySelectorAll('.step');
+            let targetStep = null;
+            steps.forEach(step => {
+                if (step.classList.contains('drag-over')) {
+                    targetStep = step;
+                }
+                step.classList.remove('drag-over');
+            });
+            
+            if (targetStep && targetStep !== touchDragElement) {
+                const draggedId = touchDragElement.dataset.sectionId;
+                const targetId = targetStep.dataset.sectionId;
+                const draggedSection = customizations.sections.find(s => s.id === draggedId);
+                const targetSection = customizations.sections.find(s => s.id === targetId);
+                const tempOrder = draggedSection.order;
+                draggedSection.order = targetSection.order;
+                targetSection.order = tempOrder;
+                saveCustomizations(customizations);
+            }
+            
+            touchDragElement.style.opacity = '';
+            if (touchDragClone) {
+                touchDragClone.remove();
+                touchDragClone = null;
+            }
+            touchDragElement = null;
+            
+            renderRoutine();
         }
 
         function handleDragStart(e) {
